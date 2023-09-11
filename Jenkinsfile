@@ -60,15 +60,15 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t petclinic1 ."
-                       sh "docker tag petclinic1 sevenajay/petclinic1:latest "
-                       sh "docker push sevenajay/petclinic1:latest "
+                       sh "docker tag petclinic1 harshavardhan19/petclinic1:latest "
+                       sh "docker push harshavardhan19/petclinic1:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image sevenajay/petclinic1:latest > trivy.txt" 
+                sh "trivy image harshavardhan19/petclinic1:latest > trivy.txt" 
             }
         }
         stage('Clean up containers') {   //if container runs it will stop and remove this block
@@ -94,7 +94,7 @@ pipeline{
               URL de build: ${env.BUILD_URL}
               """
              mail(
-             to: 'postbox.aj99@gmail.com',
+             to: 'harsharoczz19@gmail.com',
              subject: "${currentBuild.result} CI: Project name -> ${env.JOB_NAME}", 
              body: approvalMailContent,
              mimeType: 'text/plain'
@@ -111,7 +111,7 @@ pipeline{
     }
         stage('Deploy to conatiner'){
             steps{
-                sh 'docker run -d --name pet1 -p 8082:8080 sevenajay/petclinic1:latest'
+                sh 'docker run -d --name pet1 -p 8082:8080 harshavardhan19/petclinic1:latest'
             }
         }
         stage("Deploy To Tomcat"){
@@ -136,7 +136,7 @@ pipeline{
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
                 "URL: ${env.BUILD_URL}<br/>",
-            to: 'postbox.aj99@gmail.com',
+            to: 'harsharoczz19@gmail.com',
             attachmentsPattern: 'trivy.txt'
         }
     }
@@ -147,7 +147,7 @@ pipeline{
 
 stage('Manual Approval') {
   timeout(time: 10, unit: 'MINUTES') {
-    mail to: 'postbox.aj99@gmail.com',
+    mail to: 'harsharoczz19@gmail.com',
          subject: "${currentBuild.result} CI: ${env.JOB_NAME}",
          body: "Project: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nGo to ${env.BUILD_URL} and approve deployment"
     input message: "Deploy ${params.project_name}?", 
